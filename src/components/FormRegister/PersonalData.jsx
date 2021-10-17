@@ -1,33 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Button, TextField, FormControlLabel, Switch,
 } from '@material-ui/core';
+import ValidationsRegister from '../../context/ValidationsRegister';
+import useErrors from '../../hooks/useErrors';
 
-function PersonalData({ onSubmit, validations }) {
+function PersonalData({ onSubmit }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [cpf, setCpf] = useState('');
   const [promotions, setPromotions] = useState(true);
   const [news, setNews] = useState(true);
-  const [errors, setErrors] = useState({
-    cpf: { isValid: true, textHelp: '' },
-  });
-
-  function validFields(e) {
-    const { name, value } = e.target;
-    const newState = { ...errors };
-    newState[name] = validations[name](value);
-    setErrors(newState);
-  }
-
-  function canSubmit() {
-    for (const field in errors) {
-      if (!errors[field].isValid) {
-        return false;
-      }
-    }
-    return true;
-  }
+  const validations = useContext(ValidationsRegister);
+  const [errors, validFields, canSubmit] = useErrors(validations);
 
   return (
     <form
@@ -109,7 +94,7 @@ function PersonalData({ onSubmit, validations }) {
         label="Novidades"
       />
       <Button variant="contained" color="primary" type="submit">
-        Cadastrar
+        Próximo
       </Button>
     </form>
   );

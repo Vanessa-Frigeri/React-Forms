@@ -7,7 +7,7 @@ import DeliveryData from './DeliveryData';
 import PersonalData from './PersonalData';
 import UserData from './UserData';
 
-function FormRegister({ onSubmit, validations }) {
+function FormRegister({ onSubmit }) {
   const [currentPhase, setCurrentPhase] = useState(0);
   const [collectedDatas, setCollectedDatas] = useState({});
 
@@ -27,10 +27,10 @@ function FormRegister({ onSubmit, validations }) {
   }
 
   const currentForms = [
-    <UserData onSubmit={collectDatas} validations={validations} />,
-    <PersonalData onSubmit={collectDatas} validations={validations} />,
-    <DeliveryData onSubmit={collectDatas} validations={validations} />,
-    <Typography variant="h5">Obrigada pelo cadastro!</Typography>,
+    <UserData onSubmit={collectDatas} />,
+    <PersonalData onSubmit={collectDatas} />,
+    <DeliveryData onSubmit={collectDatas} />,
+    <Typography variant="h4" align="center" color="primary">Obrigada pelo cadastro!</Typography>,
   ];
 
   return (

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   TextField, Button,
 } from '@material-ui/core';
+import ValidationsRegister from '../../context/ValidationsRegister';
+import useErrors from '../../hooks/useErrors';
 
-function DeliveryData({ onSubmit, validations }) {
+function DeliveryData({ onSubmit }) {
   const [streetAddress, setStreetAddress] = useState('');
   const [numberAddress, setNumberAddress] = useState('');
   const [additionAddress, setAdditionAddress] = useState('');
@@ -11,25 +13,8 @@ function DeliveryData({ onSubmit, validations }) {
   const [province, setProvince] = useState('');
   const [zipCode, setZipCode] = useState('');
   const [country, setCountry] = useState('');
-  const [errors, setErrors] = useState({
-    password: { isValid: true, textHelp: '' },
-  });
-
-  function canSubmit() {
-    for (const field in errors) {
-      if (!errors[field].isValid) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  function validFields(e) {
-    const { name, value } = e.target;
-    const newState = { ...errors };
-    newState[name] = validations[name](value);
-    setErrors(newState);
-  }
+  const validations = useContext(ValidationsRegister);
+  const [errors, validFields, canSubmit] = useErrors(validations);
 
   return (
     <form
@@ -48,7 +33,7 @@ function DeliveryData({ onSubmit, validations }) {
         name="zipCode"
         label="CEP"
         variant="outlined"
-        type="number"
+        type="text"
         margin="normal"
         onChange={(e) => {
           setZipCode(e.target.value);

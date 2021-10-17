@@ -1,30 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   TextField, Button,
 } from '@material-ui/core';
+import ValidationsRegister from '../../context/ValidationsRegister';
+import useErrors from '../../hooks/useErrors';
 
-function UserData({ onSubmit, validations }) {
+function UserData({ onSubmit }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({
-    password: { isValid: true, textHelp: '' },
-  });
+  const validations = useContext(ValidationsRegister);
+  const [errors, validFields, canSubmit] = useErrors(validations);
 
-  function canSubmit() {
-    for (const field in errors) {
-      if (!errors[field].isValid) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  function validFields(e) {
-    const { name, value } = e.target;
-    const newState = { ...errors };
-    newState[name] = validations[name](value);
-    setErrors(newState);
-  }
   return (
     <form
       onSubmit={(e) => {
@@ -49,6 +35,9 @@ function UserData({ onSubmit, validations }) {
         onChange={(e) => {
           setUsername(e.target.value);
         }}
+        onBlur={validFields}
+        error={!errors.username.isValid}
+        helperText={errors.username.textHelp}
       />
       <TextField
         value={password}
