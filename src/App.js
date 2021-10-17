@@ -1,24 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import './assets/App.css';
+import { Container, Typography } from '@material-ui/core';
+import FormRegister from './components/FormRegister/FormRegister';
+import '@fontsource/roboto';
 
+function onSubmitForm(datas) {
+  console.log(datas);
+}
+
+function validCPF(cpf) {
+  if (cpf.length !== 11) {
+    return { isValid: false, textHelp: 'CPF deve ter 11 dígitos' };
+  }
+  return { isValid: true, textHelp: '' };
+}
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container maxWidth="sm" component="article">
+      <Typography variant="h3" component="h1" align="center" color="primary">Formulário de Cadastro</Typography>
+      <FormRegister onSubmit={onSubmitForm} validCPF={validCPF} />
+    </Container>
   );
 }
 
