@@ -1,96 +1,50 @@
-import React, { useState } from 'react';
+/* eslint-disable no-use-before-define */
 import {
-  Button, TextField, FormControlLabel, Switch,
+  Step, StepLabel, Stepper, Typography,
 } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import DeliveryData from './DeliveryData';
+import PersonalData from './PersonalData';
+import UserData from './UserData';
 
-function FormRegister({ onSubmit, validCPF }) {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [cpf, setCpf] = useState('');
-  const [promotions, setPromotions] = useState(true);
-  const [news, setNews] = useState(true);
-  const [errors, setErrors] = useState({
-    cpf: { isValid: true, textHelp: '' },
+function FormRegister({ onSubmit, validations }) {
+  const [currentPhase, setCurrentPhase] = useState(0);
+  const [collectedDatas, setCollectedDatas] = useState({});
+
+  useEffect(() => {
+    if (currentPhase === currentForms.length - 1) {
+      onSubmit(collectedDatas);
+    }
   });
 
+  function nextPhase() {
+    setCurrentPhase(currentPhase + 1);
+  }
+
+  function collectDatas(datas) {
+    setCollectedDatas({ ...collectedDatas, ...datas });
+    nextPhase();
+  }
+
+  const currentForms = [
+    <UserData onSubmit={collectDatas} validations={validations} />,
+    <PersonalData onSubmit={collectDatas} validations={validations} />,
+    <DeliveryData onSubmit={collectDatas} validations={validations} />,
+    <Typography variant="h5">Obrigada pelo cadastro!</Typography>,
+  ];
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit({
-          firstName, lastName, cpf, promotions, news,
-        });
-      }}
-    >
-      <TextField
-        value={firstName}
-        id="first-name"
-        label="Nome"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        onChange={(e) => {
-          setFirstName(e.target.value);
-        }}
-      />
-      <TextField
-        value={lastName}
-        id="last-name"
-        label="Sobrenome"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        onChange={(e) => {
-          setLastName(e.target.value);
-        }}
-      />
-      <TextField
-        value={cpf}
-        id="cpf"
-        label="CPF"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        error={!errors.cpf.isValid}
-        helperText={errors.cpf.textHelp}
-        onChange={(e) => {
-          setCpf(e.target.value);
-        }}
-        onBlur={(e) => {
-          const isValid = validCPF(e.target.value);
-          setErrors({ cpf: isValid });
-        }}
-      />
-      <FormControlLabel
-        control={(
-          <Switch
-            checked={promotions}
-            name="promotions"
-            color="primary"
-            onChange={(e) => {
-              setPromotions(e.target.checked);
-            }}
-          />
-)}
-        label="Promoções"
-      />
-      <FormControlLabel
-        control={(
-          <Switch
-            checked={news}
-            name="news"
-            color="primary"
-            onChange={(e) => {
-              setNews(e.target.checked);
-            }}
-          />
-)}
-        label="Novidades"
-      />
-      <Button variant="contained" color="primary" type="submit">
-        Cadastrar
-      </Button>
-    </form>
+    <>
+      <Stepper activeStep={currentPhase}>
+        <Step><StepLabel>Login</StepLabel></Step>
+        <Step><StepLabel>Pessoal</StepLabel></Step>
+        <Step><StepLabel>Entrega</StepLabel></Step>
+        <Step><StepLabel>Finalização</StepLabel></Step>
+      </Stepper>
+      {currentForms[currentPhase]}
+    </>
+
   );
 }
+
 export default FormRegister;
